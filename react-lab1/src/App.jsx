@@ -12,12 +12,15 @@ export default function App() {
   const [matrix, setMatrix] = useState(START);
   // Section 08: write increment(row, col): it calls the setter with incrementAt.
   //             Pass it down to Matrix as onIncrement.
+  function increment(row, col) {
+    setMatrix((prev) => incrementAt(prev, row, col));
+  }
   // Section 09: render <Stats matrix={…} /> NEXT TO the matrix, not inside it.
   // Section 11: load /matrix.json once, in a useEffect, and put it in the state.
   return (
     <main className="app">
       <Header />
-      <Matrix matrix={matrix} />
+      <Matrix matrix={matrix} onIncrement={increment} />
     </main>
   );
 }
