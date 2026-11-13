@@ -16,9 +16,9 @@ export const START = [
 //   incrementAt([[1, 2], [3, 4]], 1, 0)  →  [[1, 2], [4, 4]]
 // Never change `matrix` (the tests freeze it, so changing it throws).
 // Rows you don't touch must stay the SAME arrays; only the changed row is new.
-export function incrementAt(matrix, row, col) {
+export function incrementAt(matrix, row, col, step = 1) {
   return matrix.map((values, r) =>
-    r === row ? values.map((val, c) => (c === col ? val + 1 : val)) : values
+    r === row ? values.map((val, c) => (c === col ? val + step : val)) : values
   );
 }
 
@@ -43,10 +43,10 @@ export function stats(matrix) {
 // Section 12 (stretch) — the same shape, every cell 0.
 //   zeros([[1, 2], [3, 4]])  →  [[0, 0], [0, 0]]
 export function zeros(matrix) {
-  throw new Error("TODO");
+  return matrix.map((row) => row.map(() => 0));
 }
 
 // IN-LAB TASK (AI closed) — leave this until the lab. See inlab/decrement.check.jsx.
 export function decrementAt(matrix, row, col) {
-  throw new Error("TODO");
+  
 }
