@@ -17,11 +17,19 @@ export default function App() {
   }
   // Section 09: render <Stats matrix={…} /> NEXT TO the matrix, not inside it.
   // Section 11: load /matrix.json once, in a useEffect, and put it in the state.
+  useEffect(() => {
+    fetch("/matrix.json")
+      .then((res) => res.json())
+      .then((data) => setMatrix(data));
+  }, []);
+  
   return (
     <main className="app">
       <Header />
-      <Matrix matrix={matrix} onIncrement={increment} />
-      <Stats matrix={matrix} />
+      <div className="board">
+        <Matrix matrix={matrix} onIncrement={increment} />
+        <Stats matrix={matrix} />
+      </div>
     </main>
   );
 }
