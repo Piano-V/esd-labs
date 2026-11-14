@@ -82,5 +82,8 @@ Kept all 4 files. Verified that no unwanted hooks or extra libraries were sneake
 ## Afterwards
 
 - How many prompts did the whole feature take?
+  2 prompts: one generation prompt to get the working functionality, and one fix prompt specifying the exact contract seam from §4.
 - Which of your prompts would you write differently now, and how?
+  In Prompt 1, I would specify the single `status` property ("loading" | "ready" | "error") and require a separate `AddCourseForm` component right away so the initial output would need less restructuring.
 - One thing the rules in prompt 1 prevented (or failed to prevent):
+  The negative constraints prevented the AI from including `useMemo`, `useCallback`, `useReducer`, or `useRef`, but failed to prevent it from dumping the whole add form and all its state into `CoursesPage.jsx`.

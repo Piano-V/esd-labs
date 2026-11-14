@@ -101,22 +101,26 @@ For each "not yet" item you removed — one at a time:
 
 | Removed | `npm test` after | The app after (loads / adds / shows errors) |
 | --- | --- | --- |
-|  |  |  |
+| None | 62 passed (62) | Loads, adds in code order, shows 409 conflict and field errors |
 
-If the AI used none, say so here, and say which rule in prompt 1 you think prevented it.
+The AI used none of the "not yet" items from Part B. The rule in Prompt 1 that prevented them was:
+`"Use only useState and useEffect. Do not use useMemo, useCallback, useReducer, useRef, or context. No TypeScript. Plain fetch, no data-fetching library."`
+Because the prompt forbade these up front, the model did not reach for `useMemo` for sorting courses or `useCallback` on handlers.
 
 ## 6. Before / after
 
 |  | Before (the AI's first version) | After (yours) |
 | --- | --- | --- |
-| Files and components |  |  |
-| `useState` calls (and where) |  |  |
-| `useEffect` calls |  |  |
-| "Not yet" items |  |  |
-| Requests: on load / per add |  |  |
-| `npm test` |  |  |
+| Files and components | 2 components (`CoursesPage`, `CoursesView`) across 3 files; form inlined in page | 3 components (`CoursesPage`, `CoursesView`, `AddCourseForm`) and 1 hook (`useCourses`) across 4 files |
+| `useState` calls (and where) | 12 total: 9 in `CoursesPage.jsx`, 3 in `useCourses.js` (`courses`, `loading`, `error`) | 7 total: 4 in `AddCourseForm.jsx` (`form` object, `submitting`, `formError`, `fieldErrors`), 3 in `useCourses.js` (`courses`, `status`, `error`) |
+| `useEffect` calls | 1 in `useCourses.js` | 1 in `useCourses.js` |
+| "Not yet" items | 0 | 0 |
+| Requests: on load / per add | 2 on load (StrictMode) / 1 per add (`POST /api/courses`) | 2 on load (StrictMode) / 1 per add (`POST /api/courses`) |
+| `npm test` | 38 passed / 24 failed | 62 passed / 0 failed |
 
 ## 7. Two sentences
 
 - One thing the AI got right that you might not have thought of:
+  The AI correctly converted empty description strings to `null` and parsed numeric values with `Number()` rather than `parseInt()` so bad values like floats trigger validation errors on the server.
 - One thing you will never accept from an AI without checking again:
+  I will never accept separate `loading` and `error` booleans instead of a single `status` string, nor will I accept form state dumped into the parent page when it belongs inside its own component.
