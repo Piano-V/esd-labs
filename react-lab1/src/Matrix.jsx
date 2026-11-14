@@ -14,26 +14,33 @@
 import Cell from "./Cell.jsx";
 import { stats } from "./matrix.js";
 
-export default function Matrix({ matrix, onIncrement }) {
+export default function Matrix({ matrix, onIncrement, onDecrement }) {
   const { max } = stats(matrix);
   return (
     <table className="matrix">
       <tbody>
-        {matrix.map((values, r) => (
-          <tr key={r}>
-            {values.map((value, c) => (
-              <td key={c}>
-                <Cell
-                  row={r}
-                  col={c}
-                  value={value}
-                  onClick={() => onIncrement(r, c)}
-                  isMax={max > 0 && value === max}
-                />
+        {matrix.map((values, r) => {
+          const rowTotal = values.reduce((acc, v) => acc + v, 0);
+          return (
+            <tr key={r}>
+              {values.map((value, c) => (
+                <td key={c}>
+                  <Cell
+                    row={r}
+                    col={c}
+                    value={value}
+                    onClick={() => onIncrement(r, c)}
+                    onDecrement={() => onDecrement?.(r, c)}
+                    isMax={max > 0 && value === max}
+                  />
+                </td>
+              ))}
+              <td className="total" aria-label={`Row ${r + 1} total`}>
+                {rowTotal}
               </td>
-            ))}
-          </tr>
-        ))}
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );

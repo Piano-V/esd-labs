@@ -23,6 +23,9 @@ export default function App() {
     setMatrix((prev) => incrementAt(prev, row, col, step));
   }
 
+  function decrement(row, col) {
+    setMatrix((prev) => decrementAt(prev, row, col));
+  }
   
   // Section 09: render <Stats matrix={…} /> NEXT TO the matrix, not inside it.
   // Section 11: load /matrix.json once, in a useEffect, and put it in the state.
@@ -45,7 +48,7 @@ export default function App() {
         </button>
       </div>
       <div className="board">
-        <Matrix matrix={matrix} onIncrement={increment} />
+        <Matrix matrix={matrix} onIncrement={increment} onDecrement={decrement}/>
         <Stats matrix={matrix} />
       </div>
     </main>
