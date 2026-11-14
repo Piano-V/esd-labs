@@ -1,10 +1,10 @@
 // Lab day (AI required). This file ends up as the View described in CONTRACT.md §4.
-export function CoursesView({ courses, loading, error }) {
-  if (loading) {
+export function CoursesView({ courses, status, error }) {
+  if (status === "loading") {
     return <p>Loading courses…</p>;
   }
 
-  if (error) {
+  if (status === "error") {
     return <p>Couldn't load courses: {error}</p>;
   }
 

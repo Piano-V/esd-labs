@@ -4,46 +4,45 @@ import { apiFetch } from "../api/client.js";
 
 export function useCourses() {
   const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState("loading");
   const [error, setError] = useState(null);
 
   useEffect(() => {
     let ignore = false;
-    async function load() {
-      setLoading(true);
-      try {
-        const data = await apiFetch("/api/courses");
+
+    apiFetch("/api/courses")
+      .then((data) => {
         if (!ignore) {
           setCourses(data);
+          setStatus("ready");
           setError(null);
         }
-      } catch (err) {
+      })
+      .catch((err) => {
         if (!ignore) {
+          setStatus("error");
           setError(err.message);
         }
-      } finally {
-        if (!ignore) {
-          setLoading(false);
-        }
-      }
-    }
-    load();
+      });
+
     return () => {
       ignore = true;
     };
   }, []);
 
-  async function addCourse(courseData) {
+  async function addCourse(courseRequest) {
     const created = await apiFetch("/api/courses", {
       method: "POST",
-      body: courseData,
+      body: courseRequest,
     });
+
     setCourses((prev) => {
       const next = [...prev, created];
       return next.sort((a, b) => a.code.localeCompare(b.code));
     });
+
     return created;
   }
 
-  return { courses, loading, error, addCourse };
+  return { courses, status, error, addCourse };
 }

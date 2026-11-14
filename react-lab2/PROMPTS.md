@@ -36,19 +36,44 @@ Saved the files to `src/courses/`. Verified that the page works as a user would 
 
 ---
 
-## Prompt 2 —
+## Prompt 2 — fix to the seam
 
-**Why I sent it:** (for a fix prompt: which decision in AUDIT.md it carries out)
+**Why I sent it:**
+Carried out the decisions from AUDIT.md §4:
+1. Split the inline form out of CoursesPage into `AddCourseForm.jsx` with controlled inputs and accessible field errors (`aria-invalid`, `aria-describedby`, `role="alert"`).
+2. Unify `loading` and `error` states in `useCourses.js` into a single `status` string (`"loading"` | `"ready"` | `"error"`), and let `addCourse` re-throw `ApiError` so the form catches it.
+3. Update `CoursesView.jsx` to take `{ courses, status, error }` without any internal state or fetching.
+4. Keep `CoursesPage.jsx` minimal, purely wiring the hook, view, and form.
 
 **Sent:**
 
 ```text
+I audited the code against "The Shape of a Good React Slice". Refactor it exactly as follows according to the seam in CONTRACT.md §4:
 
+1. In src/courses/CoursesView.jsx:
+   Export CoursesView({ courses, status, error }). Render purely from props: "loading" -> "Loading courses…", "error" -> "Couldn't load courses: <error>", empty -> "No courses yet.", otherwise <ul> with <li key={course.id}> with the two formatted lines. No hooks, no state.
+
+2. In src/courses/useCourses.js:
+   Export useCourses(). Return { courses, status, error, addCourse }. Use status: "loading" | "ready" | "error". Load GET /api/courses once on mount with ignore cleanup flag. In addCourse, POST /api/courses, insert 201 body into courses in code order as a new array, and let ApiError throw directly.
+
+3. In src/courses/AddCourseForm.jsx:
+   Export AddCourseForm({ onAdd }). Move the 6 inputs, submitting state, and form error states into this component. On submit, convert credits and capacity with Number(), set empty description to null, and await onAdd. When a field error occurs, set aria-invalid="true" and point aria-describedby to the field error message id. Put role="alert" on the form error message above the button.
+
+4. In src/courses/CoursesPage.jsx:
+   Call useCourses(), and render <h1>Courses</h1>, <CoursesView courses={courses} status={status} error={error} />, and <AddCourseForm onAdd={addCourse} />.
+
+Rules: Use only useState and useEffect. No useMemo, useCallback, useReducer, useRef, or context. JavaScript only.
 ```
 
 **What came back:**
+The 4 files matching the exact shape in CONTRACT.md §4:
+- `CoursesView.jsx` (dumb component taking `{ courses, status, error }`)
+- `useCourses.js` (hook managing status, courses list, and addCourse)
+- `AddCourseForm.jsx` (form owning local input states, submitting state, aria attributes)
+- `CoursesPage.jsx` (clean coordinator wiring the slice)
 
 **What I kept, and what I rejected:**
+Kept all 4 files. Verified that no unwanted hooks or extra libraries were sneaked in. Verified all 62 tests pass in `npm test` without any regressions.
 
 ---
 
